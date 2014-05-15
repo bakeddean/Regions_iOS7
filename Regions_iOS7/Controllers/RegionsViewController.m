@@ -7,6 +7,7 @@
 //
 
 #import "RegionsViewController.h"
+#import "RegionAnnotation.h"
 
 @interface RegionsViewController ()
 
@@ -14,12 +15,41 @@
 
 @implementation RegionsViewController
 
+#pragma mark - View lifecycle
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.updateTableView.dataSource = self;
+    self.updatesTableView.dataSource = self;
+    
+    // Create empty array to add region events to.
+	self.updateEvents = [[NSMutableArray alloc] initWithCapacity:0];
+	
+	// Create location manager with filters set for battery efficiency.
+	self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+	self.locationManager.distanceFilter = kCLLocationAccuracyHundredMeters;
+	self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+	
+	// Start updating location changes.
+	[self.locationManager startUpdatingLocation];
 }
+
+- (void)viewDidAppear:(BOOL)animated {
+	// Get all regions being monitored for this application.
+	NSArray *regions = [[self.locationManager monitoredRegions] allObjects];
+	
+	// Iterate through the regions and add annotations to the map for each of them.
+	for (int i = 0; i < [regions count]; i++) {
+		CLCircularRegion *region = [regions objectAtIndex:i];
+		RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLCircularRegion:region];
+		[self.regionsMapView addAnnotation:annotation];
+	}
+}
+
+
+#pragma mark - Memory management
 
 - (void)didReceiveMemoryWarning
 {
@@ -35,8 +65,7 @@
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //return [updateEvents count];
-    return 5;
+    return [self.updateEvents count];
 }
 
 
@@ -49,8 +78,7 @@
     }
     
 	cell.textLabel.font = [UIFont systemFontOfSize:12.0];
-	//cell.textLabel.text = [updateEvents objectAtIndex:indexPath.row];
-    cell.textLabel.text = @"Dean";
+	cell.textLabel.text = [self.updateEvents objectAtIndex:indexPath.row];
 	cell.textLabel.numberOfLines = 4;
 	
     return cell;
@@ -69,17 +97,17 @@
  */
 - (IBAction)switchView {
 	// Swap the hidden status of the map and table view so that the appropriate one is now showing.
-	self.regionMapView.hidden = !self.regionMapView.hidden;
-	self.updateTableView.hidden = !self.updateTableView.hidden;
+	self.regionsMapView.hidden = !self.regionsMapView.hidden;
+	self.updatesTableView.hidden = !self.updatesTableView.hidden;
 	
 	// Adjust the "add region" button to only be enabled when the map is shown.
-	//NSArray *navigationBarItems = [NSArray arrayWithArray:self.navigationBar.items];
-	//UIBarButtonItem *addRegionButton = [[navigationBarItems objectAtIndex:0] rightBarButtonItem];
-	//addRegionButton.enabled = !addRegionButton.enabled;
+	NSArray *navigationBarItems = [NSArray arrayWithArray:self.navigationController.navigationBar.items];
+	UIBarButtonItem *addRegionButton = [[navigationBarItems objectAtIndex:0] rightBarButtonItem];
+	addRegionButton.enabled = !addRegionButton.enabled;
 	
 	// Reload the table data and update the icon badge number when the table view is shown.
-	if (!_updateTableView.hidden) {
-		[_updateTableView reloadData];
+	if (!_updatesTableView.hidden) {
+		[_updatesTableView reloadData];
 	}
 }
 

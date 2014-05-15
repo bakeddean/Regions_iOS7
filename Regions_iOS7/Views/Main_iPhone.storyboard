@@ -64,8 +64,8 @@
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="qMu-SZ-pJc"/>
                     </navigationItem>
                     <connections>
-                        <outlet property="regionMapView" destination="PlH-QQ-uBI" id="AQ7-SV-2M4"/>
-                        <outlet property="updateTableView" destination="iHY-m3-CdE" id="s7N-6e-AAx"/>
+                        <outlet property="regionsMapView" destination="PlH-QQ-uBI" id="7dU-zm-OaG"/>
+                        <outlet property="updatesTableView" destination="iHY-m3-CdE" id="g0N-lz-SmN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
