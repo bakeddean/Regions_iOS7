@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0521125C19256C0F003D53D0 /* RegionAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0521125B19256C0F003D53D0 /* RegionAnnotation.m */; };
-		0521125F19256F20003D53D0 /* RegionAnnotatonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0521125E19256F20003D53D0 /* RegionAnnotatonView.m */; };
+		0521125F19256F20003D53D0 /* RegionAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0521125E19256F20003D53D0 /* RegionAnnotationView.m */; };
 		054DAE7B19246DF200343E55 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 054DAE7A19246DF200343E55 /* Foundation.framework */; };
 		054DAE7D19246DF200343E55 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 054DAE7C19246DF200343E55 /* CoreGraphics.framework */; };
 		054DAE7F19246DF200343E55 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 054DAE7E19246DF200343E55 /* UIKit.framework */; };
@@ -41,8 +41,8 @@
 /* Begin PBXFileReference section */
 		0521125A19256C0F003D53D0 /* RegionAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegionAnnotation.h; sourceTree = "<group>"; };
 		0521125B19256C0F003D53D0 /* RegionAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionAnnotation.m; sourceTree = "<group>"; };
-		0521125D19256F20003D53D0 /* RegionAnnotatonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegionAnnotatonView.h; sourceTree = "<group>"; };
-		0521125E19256F20003D53D0 /* RegionAnnotatonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionAnnotatonView.m; sourceTree = "<group>"; };
+		0521125D19256F20003D53D0 /* RegionAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegionAnnotationView.h; sourceTree = "<group>"; };
+		0521125E19256F20003D53D0 /* RegionAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionAnnotationView.m; sourceTree = "<group>"; };
 		054DAE7719246DF200343E55 /* Regions_iOS7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Regions_iOS7.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		054DAE7A19246DF200343E55 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		054DAE7C19246DF200343E55 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -174,8 +174,8 @@
 			children = (
 				054DAEB619246FD100343E55 /* Main_iPad.storyboard */,
 				054DAEB819246FDC00343E55 /* Main_iPhone.storyboard */,
-				0521125D19256F20003D53D0 /* RegionAnnotatonView.h */,
-				0521125E19256F20003D53D0 /* RegionAnnotatonView.m */,
+				0521125D19256F20003D53D0 /* RegionAnnotationView.h */,
+				0521125E19256F20003D53D0 /* RegionAnnotationView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -288,7 +288,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0521125C19256C0F003D53D0 /* RegionAnnotation.m in Sources */,
-				0521125F19256F20003D53D0 /* RegionAnnotatonView.m in Sources */,
+				0521125F19256F20003D53D0 /* RegionAnnotationView.m in Sources */,
 				054DAEBF1924718300343E55 /* RegionsViewController.m in Sources */,
 				054DAE8B19246DF200343E55 /* AppDelegate.m in Sources */,
 				054DAE8719246DF200343E55 /* main.m in Sources */,

@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Dean Woodward. All rights reserved.
 //
 
-#import "RegionAnnotatonView.h"
+#import "RegionAnnotationView.h"
 #import "RegionAnnotation.h"
 
-@implementation RegionAnnotatonView{
+@implementation RegionAnnotationView{
     MKCircle *radiusOverlay;
 	BOOL isRadiusUpdated;
 }
@@ -35,7 +35,7 @@
 		self.theAnnotation = (RegionAnnotation *)annotation;
 		self.pinColor = MKPinAnnotationColorPurple;
 		radiusOverlay = [MKCircle circleWithCenterCoordinate:self.theAnnotation.coordinate radius:self.theAnnotation.radius];
-		
+
 		[self.map addOverlay:radiusOverlay];
 	}
 	

@@ -61,7 +61,11 @@
                                 <action selector="switchView" destination="vXZ-lx-hvc" eventType="valueChanged" id="uDD-Wb-OTT"/>
                             </connections>
                         </segmentedControl>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="qMu-SZ-pJc"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="qMu-SZ-pJc">
+                            <connections>
+                                <action selector="addRegion" destination="vXZ-lx-hvc" id="EPr-Hx-Mfe"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="regionsMapView" destination="PlH-QQ-uBI" id="7dU-zm-OaG"/>

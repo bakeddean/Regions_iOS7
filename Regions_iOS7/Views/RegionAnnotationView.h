@@ -10,7 +10,7 @@
 
 @class RegionAnnotation;
 
-@interface RegionAnnotatonView : MKPinAnnotationView
+@interface RegionAnnotationView : MKPinAnnotationView
 
 @property (nonatomic, assign) MKMapView *map;
 @property (nonatomic, assign) RegionAnnotation *theAnnotation;

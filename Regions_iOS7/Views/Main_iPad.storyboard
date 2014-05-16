@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="12F45" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="12F45" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="q1X-ed-dd6">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -15,11 +15,84 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="8lK-Os-YJw">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="SiS-Ve-q8f">
+                                        <rect key="frame" x="0.0" y="86" width="768" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SiS-Ve-q8f" id="AAY-Z1-Oxp">
+                                            <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="sb7-Uf-QY8">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </mapView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="sb7-Uf-QY8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="0Ws-KL-nKE"/>
+                            <constraint firstItem="sb7-Uf-QY8" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="2Jd-rr-C7h"/>
+                            <constraint firstAttribute="bottom" secondItem="8lK-Os-YJw" secondAttribute="bottom" id="Ftx-Nv-msh"/>
+                            <constraint firstAttribute="bottom" secondItem="sb7-Uf-QY8" secondAttribute="bottom" id="FvS-bY-klt"/>
+                            <constraint firstAttribute="trailing" secondItem="sb7-Uf-QY8" secondAttribute="trailing" id="MMb-wy-Y8b"/>
+                            <constraint firstAttribute="trailing" secondItem="8lK-Os-YJw" secondAttribute="trailing" id="OZg-N1-Reg"/>
+                            <constraint firstItem="8lK-Os-YJw" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="PHy-6T-cLv"/>
+                            <constraint firstItem="8lK-Os-YJw" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="V9Q-sT-65o"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="MH0-6w-wcd">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="Ch0-cx-FBA">
+                            <rect key="frame" x="231" y="7" width="307" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="Map"/>
+                                <segment title="Updates"/>
+                            </segments>
+                            <connections>
+                                <action selector="switchView" destination="BYZ-38-t0r" eventType="valueChanged" id="ODJ-Fk-DAE"/>
+                            </connections>
+                        </segmentedControl>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="V1p-9g-vhx">
+                            <connections>
+                                <action selector="addRegion" destination="BYZ-38-t0r" id="rVQ-Yg-Wpu"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="regionsMapView" destination="sb7-Uf-QY8" id="f5z-HC-bfe"/>
+                        <outlet property="updatesTableView" destination="8lK-Os-YJw" id="lml-0M-daY"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="1193" y="-160"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="v3d-lF-QSh">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="q1X-ed-dd6" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="jxV-q5-IdD">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="zqh-XX-D6u"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="RN5-ZH-Spv" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="223" y="-160"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

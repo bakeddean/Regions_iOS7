@@ -35,13 +35,13 @@
 /*
  This method provides a custom setter so that the model is notified when the subtitle value has changed.
  */
-- (void)setRadius:(CLLocationDistance)newRadius {
-	[self willChangeValueForKey:@"subtitle"];
+/*- (void)setRadius:(CLLocationDistance)newRadius {
+	//[self willChangeValueForKey:@"subtitle"];
 	
 	self.radius = newRadius;
 	
-	[self didChangeValueForKey:@"subtitle"];
-}
+	//[self didChangeValueForKey:@"subtitle"];
+}*/
 
 - (NSString *)subtitle {
 	return [NSString stringWithFormat: @"Lat: %.4F, Lon: %.4F, Rad: %.1fm", self.coordinate.latitude, self.coordinate.longitude, self.radius];
