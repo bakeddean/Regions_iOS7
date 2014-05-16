@@ -10,7 +10,7 @@
 #import "RegionAnnotation.h"
 #import "RegionAnnotationView.h"
 
-#define REGION_RADIUS 100
+#define REGION_RADIUS 50
 
 @interface RegionsViewController ()
 
@@ -133,8 +133,9 @@
 	if([overlay isKindOfClass:[MKCircle class]]) {
 		// Create the view for the radius overlay.
 		MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
-		circleView.strokeColor = [UIColor purpleColor];
-		circleView.fillColor = [[UIColor purpleColor] colorWithAlphaComponent:0.4];
+		circleView.strokeColor = [UIColor purpleColor];                                 // deprecated
+		circleView.fillColor = [[UIColor purpleColor] colorWithAlphaComponent:0.4];     // deprecated
+        circleView.lineWidth = 1.0f;                                                    // deprecated
 		
 		return circleView;		
 	}
@@ -159,7 +160,7 @@
 		if (oldState == MKAnnotationViewDragStateDragging && newState == MKAnnotationViewDragStateEnding) {
 			[regionView updateRadiusOverlay];
 			
-			CLCircularRegion *newRegion = [[CLCircularRegion alloc] initWithCenter:regionAnnotation.coordinate radius:1000.0 identifier:[NSString stringWithFormat:@"%f, %f", regionAnnotation.coordinate.latitude, regionAnnotation.coordinate.longitude]];
+			CLCircularRegion *newRegion = [[CLCircularRegion alloc] initWithCenter:regionAnnotation.coordinate radius:REGION_RADIUS identifier:[NSString stringWithFormat:@"%f, %f", regionAnnotation.coordinate.latitude, regionAnnotation.coordinate.longitude]];
 			regionAnnotation.region = newRegion;
 			
 			[_locationManager startMonitoringForRegion:regionAnnotation.region];// desiredAccuracy:kCLLocationAccuracyBest];
@@ -167,9 +168,10 @@
 	}	
 }
 
-/*
- User has tapped the delete button on the callout. Remove the annotation and stop monitoring the region.
- */
+//------------------------------------------------------------------------------
+// User has tapped the delete button on the callout. Remove the annotation and
+// stop monitoring the region.
+//------------------------------------------------------------------------------
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
 	RegionAnnotationView *regionView = (RegionAnnotationView *)view;
 	RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
@@ -222,10 +224,11 @@
 
 #pragma mark - RegionsViewController
 
-/*
- This method swaps the visibility of the map view and the table of region events.
- The "add region" button in the navigation bar is also altered to only be enabled when the map is shown.
- */
+//------------------------------------------------------------------------------
+// This method swaps the visibility of the map view and the table of region
+// events. The "add region" button in the navigation bar is also altered to only
+// be enabled when the map is shown.
+//------------------------------------------------------------------------------
 - (IBAction)switchView {
 	// Swap the hidden status of the map and table view so that the appropriate one is now showing.
 	self.regionsMapView.hidden = !self.regionsMapView.hidden;
@@ -242,6 +245,9 @@
 	}
 }
 
+//------------------------------------------------------------------------------
+// Create a new region - Add it to the map and start monitoring it.
+//------------------------------------------------------------------------------
 - (IBAction)addRegion {
 if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) {
         
@@ -268,9 +274,10 @@ if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) 
 }
 
 
-/*
- This method adds the region event to the events array and updates the icon badge number.
- */
+//------------------------------------------------------------------------------
+// This method adds the region event to the events array and updates the icon
+// badge number.
+//------------------------------------------------------------------------------
 - (void)updateWithEvent:(NSString *)event {
 	// Add region event to the updates array.
 	[self.updateEvents insertObject:event atIndex:0];

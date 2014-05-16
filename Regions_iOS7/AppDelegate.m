@@ -7,8 +7,11 @@
 //
 
 #import "AppDelegate.h"
+#import "RegionsViewController.h"
 
 @implementation AppDelegate
+
+#pragma mark - Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -22,25 +25,85 @@
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+//------------------------------------------------------------------------------
+// Use this method to release shared resources, save user data, invalidate
+// timers, and store enough application state information to restore your
+// application to its current state in case it is terminated later. If your
+// application supports background execution, called instead of
+// applicationWillTerminate: when the user quits.
+//------------------------------------------------------------------------------
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    
+	// Reset the icon badge number to zero.
+	[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+	
+	if ([CLLocationManager significantLocationChangeMonitoringAvailable]) {
+		
+        // Get a reference to the RegionsViewController
+        RegionsViewController *rvc = [self regionsViewController];
+        
+        // Stop normal location updates and start significant location change updates for battery efficiency.
+		[rvc.locationManager stopUpdatingLocation];
+		[rvc.locationManager startMonitoringSignificantLocationChanges];
+        NSLog(@"Switched to significant change monitoring.");
+	}
+	else {
+		NSLog(@"Significant location change monitoring is not available.");
+	}
 }
 
+//------------------------------------------------------------------------------
+// Called as part of the transition from the background to the inactive state;
+// Here you can undo many of the changes made on entering the background.
+//------------------------------------------------------------------------------
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
 }
 
+//------------------------------------------------------------------------------
+// Restart any tasks that were paused (or not yet started) while the application
+// was inactive. If the application was previously in the background, optionally
+// refresh the user interface.
+//------------------------------------------------------------------------------
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    RegionsViewController *rvc = [self regionsViewController];
+    
+    if ([CLLocationManager significantLocationChangeMonitoringAvailable]) {
+		// Stop significant location updates and start normal location updates again since the app is in the forefront.
+		[rvc.locationManager stopMonitoringSignificantLocationChanges];
+		[rvc.locationManager startUpdatingLocation];
+        NSLog(@"Switched to updating location.");
+	}
+	else {
+		NSLog(@"Significant location change monitoring is not available.");
+	}
+	
+	if (!rvc.updatesTableView.hidden) {
+		// Reload the updates table view to reflect update events that were recorded in the background.
+		[rvc.updatesTableView reloadData];
+			
+		// Reset the icon badge number to zero.
+		[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+	}
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+//------------------------------------------------------------------------------
+// Get a reference to the RegionsViewController
+//------------------------------------------------------------------------------
+- (RegionsViewController *)regionsViewController
+{
+    UIViewController *navVC = self.window.rootViewController;
+    RegionsViewController *rvc = [navVC.childViewControllers firstObject];
+    return rvc;
+}
+
 
 @end
