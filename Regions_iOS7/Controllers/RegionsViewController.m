@@ -40,6 +40,7 @@
 	[self.locationManager startUpdatingLocation];
     
     _regionsMapView.delegate = self;
+    _regionsMapView.showsUserLocation = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
