@@ -33,7 +33,7 @@
 	// Create location manager with filters set for battery efficiency.
 	self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
-	self.locationManager.distanceFilter = kCLLocationAccuracyHundredMeters;
+	self.locationManager.distanceFilter = kCLLocationAccuracyHundredMeters; // kCLDistanceFilterNone
 	self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
 	
 	// Start updating location changes.
@@ -44,7 +44,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-	// Get all regions being monitored for this application.
+	// Get all regions being monitored for this application ... monitored regions persist across ap launches.
 	NSArray *regions = [[self.locationManager monitoredRegions] allObjects];
 	
 	// Iterate through the regions and add annotations to the map for each of them.

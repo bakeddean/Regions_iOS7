@@ -26,6 +26,7 @@
 		054DAEBB192470B900343E55 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 054DAEBA192470B900343E55 /* CoreLocation.framework */; };
 		054DAEBF1924718300343E55 /* RegionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 054DAEBE1924718300343E55 /* RegionsViewController.m */; };
 		054DAEC119247FD800343E55 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 054DAEC019247FD800343E55 /* MapKit.framework */; };
+		05C1155D192969E90097C8F7 /* GeoJSON in Resources */ = {isa = PBXBuildFile; fileRef = 05C1155C192969E90097C8F7 /* GeoJSON */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		054DAEBD1924718300343E55 /* RegionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegionsViewController.h; sourceTree = "<group>"; };
 		054DAEBE1924718300343E55 /* RegionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionsViewController.m; sourceTree = "<group>"; };
 		054DAEC019247FD800343E55 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		05C1155C192969E90097C8F7 /* GeoJSON */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GeoJSON; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 		054DAE8019246DF200343E55 /* Regions_iOS7 */ = {
 			isa = PBXGroup;
 			children = (
+				05C1155C192969E90097C8F7 /* GeoJSON */,
 				054DAEBC1924718300343E55 /* Controllers */,
 				054DAEB219246EA400343E55 /* Views */,
 				054DAE8919246DF200343E55 /* AppDelegate.h */,
@@ -268,6 +271,7 @@
 				054DAEB919246FDC00343E55 /* Main_iPhone.storyboard in Resources */,
 				054DAEB719246FD100343E55 /* Main_iPad.storyboard in Resources */,
 				054DAE9619246DF200343E55 /* Images.xcassets in Resources */,
+				05C1155D192969E90097C8F7 /* GeoJSON in Resources */,
 				054DAE8519246DF200343E55 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
