@@ -27,6 +27,7 @@
 		054DAEBF1924718300343E55 /* RegionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 054DAEBE1924718300343E55 /* RegionsViewController.m */; };
 		054DAEC119247FD800343E55 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 054DAEC019247FD800343E55 /* MapKit.framework */; };
 		05C1155D192969E90097C8F7 /* GeoJSON in Resources */ = {isa = PBXBuildFile; fileRef = 05C1155C192969E90097C8F7 /* GeoJSON */; };
+		05C11561192971A30097C8F7 /* GeoJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 05C11560192971A30097C8F7 /* GeoJsonParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,8 @@
 		054DAEBE1924718300343E55 /* RegionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionsViewController.m; sourceTree = "<group>"; };
 		054DAEC019247FD800343E55 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		05C1155C192969E90097C8F7 /* GeoJSON */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GeoJSON; sourceTree = "<group>"; };
+		05C1155F192971A30097C8F7 /* GeoJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoJsonParser.h; sourceTree = "<group>"; };
+		05C11560192971A30097C8F7 /* GeoJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoJsonParser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +142,8 @@
 				054DAE8119246DF200343E55 /* Supporting Files */,
 				0521125A19256C0F003D53D0 /* RegionAnnotation.h */,
 				0521125B19256C0F003D53D0 /* RegionAnnotation.m */,
+				05C1155F192971A30097C8F7 /* GeoJsonParser.h */,
+				05C11560192971A30097C8F7 /* GeoJsonParser.m */,
 			);
 			path = Regions_iOS7;
 			sourceTree = "<group>";
@@ -293,6 +298,7 @@
 			files = (
 				0521125C19256C0F003D53D0 /* RegionAnnotation.m in Sources */,
 				0521125F19256F20003D53D0 /* RegionAnnotationView.m in Sources */,
+				05C11561192971A30097C8F7 /* GeoJsonParser.m in Sources */,
 				054DAEBF1924718300343E55 /* RegionsViewController.m in Sources */,
 				054DAE8B19246DF200343E55 /* AppDelegate.m in Sources */,
 				054DAE8719246DF200343E55 /* main.m in Sources */,

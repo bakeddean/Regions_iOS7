@@ -9,6 +9,7 @@
 #import "RegionsViewController.h"
 #import "RegionAnnotation.h"
 #import "RegionAnnotationView.h"
+#import "GeoJsonParser.h"
 
 #define REGION_RADIUS 50
 
@@ -33,7 +34,7 @@
 	// Create location manager with filters set for battery efficiency.
 	self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
-	self.locationManager.distanceFilter = kCLLocationAccuracyHundredMeters; // kCLDistanceFilterNone
+	self.locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters; // kCLDistanceFilterNone  kCLLocationAccuracyNearestTenMeters  kCLLocationAccuracyHundredMeters
 	self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
 	
 	// Start updating location changes.
@@ -44,15 +45,41 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-	// Get all regions being monitored for this application ... monitored regions persist across ap launches.
+
+	// Get all regions being monitored for this application ... monitored regions persist across app launches.
 	NSArray *regions = [[self.locationManager monitoredRegions] allObjects];
-	
-	// Iterate through the regions and add annotations to the map for each of them.
-	for (int i = 0; i < [regions count]; i++) {
-		CLCircularRegion *region = [regions objectAtIndex:i];
-		RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLCircularRegion:region];
-		[self.regionsMapView addAnnotation:annotation];
-	}
+    
+    // If the location manager has no regions, read them in from the JSON file
+    if([regions count] == 0){
+        GeoJsonParser *parser = [GeoJsonParser sharedInstance];
+        regions = [parser parseGeoJson];
+    }
+    
+    // Add the regions to the map
+    for (int i = 0; i < [regions count]; i++) {
+        CLCircularRegion *region = [regions objectAtIndex:i];
+        RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLCircularRegion:region];
+        [self.regionsMapView addAnnotation:annotation];
+    }
+    
+    [self addPolyOverlay];
+}
+
+//------------------------------------------------------------------------------
+// Add polygon overlay for test purposes.
+//------------------------------------------------------------------------------
+- (void) addPolyOverlay
+{
+    CLLocationCoordinate2D commuterLotCoords[5]={
+        CLLocationCoordinate2DMake(-41.28610775408706, 174.77821612356817),
+        CLLocationCoordinate2DMake(-41.28633751801452, 174.77896714209527),
+        CLLocationCoordinate2DMake(-41.287837010094115, 174.7793480157743),
+        CLLocationCoordinate2DMake(-41.28792568865442, 174.77855408190538),
+        CLLocationCoordinate2DMake(-41.28610775408706, 174.77821612356817)
+    };
+    
+    MKPolygon *commuterPoly1 = [MKPolygon polygonWithCoordinates:commuterLotCoords count:5];
+    [self.regionsMapView addOverlay:commuterPoly1];
 }
 
 #pragma mark - Memory management
@@ -131,8 +158,9 @@
 
 
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
-	if([overlay isKindOfClass:[MKCircle class]]) {
-		// Create the view for the radius overlay.
+
+    // Create the view for the Circle overlay.
+	if([overlay isKindOfClass:[MKCircle class]]){
 		MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
 		circleView.strokeColor = [UIColor purpleColor];                                 // deprecated
 		circleView.fillColor = [[UIColor purpleColor] colorWithAlphaComponent:0.4];     // deprecated
@@ -140,6 +168,16 @@
 		
 		return circleView;		
 	}
+    
+    // Create the view for the Polygon overlay
+    else if([overlay isKindOfClass:[MKPolygon class]]){
+        MKPolygonView *polyView = [[MKPolygonView alloc] initWithOverlay:overlay];
+        polyView.lineWidth=1;
+        polyView.strokeColor=[UIColor blueColor];
+        polyView.fillColor=[[UIColor blueColor] colorWithAlphaComponent:0.5];
+        
+        return polyView;
+    }
 	
 	return nil;
 }
