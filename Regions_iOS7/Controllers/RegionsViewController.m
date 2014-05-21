@@ -46,6 +46,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 
+    GeoJsonParser *parser = [GeoJsonParser sharedInstance];
+    [parser regionsWithJSONFile:@"Polygon"];
+
 	// Get all regions being monitored for this application ... monitored regions persist across app launches.
 	NSArray *regions = [[self.locationManager monitoredRegions] allObjects];
     

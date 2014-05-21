@@ -8,6 +8,8 @@
 
 #import "GeoJsonParser.h"
 #import <CoreLocation/CoreLocation.h>
+#import "BPRegion.h"
+#import "BPPolygon.h"
 
 #define FILE_NAME @"Regions"
 #define CIRCLE @"CLCircularRegion"
@@ -66,9 +68,35 @@
             
             [regions addObject:region];
         }
+        
+        // TODO - check how multiple polygons are stored in the json file
         else if([type isEqualToString:POLYGON]){
-            // Iterate throught the co-ordinates
-            // Or create a region using the given array? (Convert to an array of CLLocationCoordinate2D's)
+        
+            NSArray *coordinates = [[geometry objectForKey:@"coordinates"] firstObject];
+            NSMutableArray *locations = [[NSMutableArray alloc] init];
+            
+            // Iterate through the innermost array
+            for(NSArray *points in coordinates){
+                CLLocation *loc = [[CLLocation alloc] initWithLatitude:[points[0] doubleValue] longitude:[points[1] doubleValue]];
+                [locations addObject:loc];
+            }
+            
+            // Create a polygon with our location array
+            BPPolygon *testPolygon2 = [BPPolygon polygonWithLocations:locations];
+
+            // Test our polygon
+            CLLocationCoordinate2D bob = {174.7782107591527,-41.28610290434616};
+            CLLocationCoordinate2D bob2 = {175.7782107591527,-41.28610290434616};
+            
+            BOOL dean = [testPolygon2 containsCoordinate:bob];
+            NSLog(@"Dean %@", dean ? @"true" : @"false");
+            
+            dean = [testPolygon2 containsCoordinate:bob2];
+            NSLog(@"Dean %@", dean ? @"true" : @"false");
+            
+            
+            //NSSet *polygons = [NSSet setWithObjects:[self polygonWithOffset:0], [self polygonWithOffset:30], nil];
+            //BPRegion *region = [BPRegion regionWithPolygons:polygons identifier:nil];
         }
     }];
     
