@@ -11,7 +11,9 @@
 
 @interface RegionAnnotation : NSObject <MKAnnotation>
 
-@property (nonatomic, retain) CLCircularRegion *region;
+//@property (nonatomic, retain) CLCircularRegion *region;
+@property (nonatomic, retain) CLRegion *region;
+
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic) CLLocationDistance radius;
 @property (nonatomic, copy) NSString *title;

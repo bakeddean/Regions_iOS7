@@ -47,6 +47,8 @@
     
     // Iterate through the JSON array and create the Regions
     NSArray *features = [root objectForKey:@"features"];
+    NSMutableSet *polygons = [NSMutableSet new];
+    
     [features enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     
         // Get the data we need for CLCircularRegions
@@ -69,36 +71,25 @@
             [regions addObject:region];
         }
         
-        // TODO - check how multiple polygons are stored in the json file
         else if([type isEqualToString:POLYGON]){
-        
             NSArray *coordinates = [[geometry objectForKey:@"coordinates"] firstObject];
             NSMutableArray *locations = [[NSMutableArray alloc] init];
             
-            // Iterate through the innermost array
+            // Iterate through the innermost array - of length 2 containing lat,lon
             for(NSArray *points in coordinates){
                 CLLocation *loc = [[CLLocation alloc] initWithLatitude:[points[0] doubleValue] longitude:[points[1] doubleValue]];
                 [locations addObject:loc];
             }
             
             // Create a polygon with our location array
-            BPPolygon *testPolygon2 = [BPPolygon polygonWithLocations:locations];
-
-            // Test our polygon
-            CLLocationCoordinate2D bob = {174.7782107591527,-41.28610290434616};
-            CLLocationCoordinate2D bob2 = {175.7782107591527,-41.28610290434616};
-            
-            BOOL dean = [testPolygon2 containsCoordinate:bob];
-            NSLog(@"Dean %@", dean ? @"true" : @"false");
-            
-            dean = [testPolygon2 containsCoordinate:bob2];
-            NSLog(@"Dean %@", dean ? @"true" : @"false");
-            
-            
-            //NSSet *polygons = [NSSet setWithObjects:[self polygonWithOffset:0], [self polygonWithOffset:30], nil];
-            //BPRegion *region = [BPRegion regionWithPolygons:polygons identifier:nil];
+            BPPolygon *polygon = [BPPolygon polygonWithLocations:locations];
+            [polygons addObject:polygon];
         }
     }];
+    
+    // A BPRegion can be composed of many polygons, so create this after the iteration
+    BPRegion *region = [BPRegion regionWithPolygons:polygons identifier:nil];
+    [regions addObject:region];
     
     return regions;
 }
