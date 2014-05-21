@@ -11,6 +11,6 @@
 @interface GeoJsonParser : NSObject
 
 + (instancetype)sharedInstance;
-- (NSArray *)parseGeoJson;
+- (NSArray *)regionsWithJSONFile:(NSString *)fileName;
 
 @end

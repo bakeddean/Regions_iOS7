@@ -52,7 +52,7 @@
     // If the location manager has no regions, read them in from the JSON file
     if([regions count] == 0){
         GeoJsonParser *parser = [GeoJsonParser sharedInstance];
-        regions = [parser parseGeoJson];
+        regions = [parser regionsWithJSONFile:@"Regions"];
     }
     
     // Add the regions to the map
@@ -172,9 +172,9 @@
     // Create the view for the Polygon overlay
     else if([overlay isKindOfClass:[MKPolygon class]]){
         MKPolygonView *polyView = [[MKPolygonView alloc] initWithOverlay:overlay];
-        polyView.lineWidth=1;
-        polyView.strokeColor=[UIColor blueColor];
-        polyView.fillColor=[[UIColor blueColor] colorWithAlphaComponent:0.5];
+        polyView.lineWidth = 1;
+        polyView.strokeColor = [UIColor blueColor];
+        polyView.fillColor = [[UIColor blueColor] colorWithAlphaComponent:0.5];
         
         return polyView;
     }

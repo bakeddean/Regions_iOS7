@@ -10,6 +10,9 @@
 #import <CoreLocation/CoreLocation.h>
 
 #define FILE_NAME @"Regions"
+#define CIRCLE @"CLCircularRegion"
+#define POLYGON @"Polygon"
+
 
 @implementation GeoJsonParser
 
@@ -27,36 +30,46 @@
 }
 
 //------------------------------------------------------------------------------
-// Read the Region data from the JSON file into an array.
+// Read the Region data from the given JSON file into an array.
 //------------------------------------------------------------------------------
-- (NSArray *)parseGeoJson
+- (NSArray *)regionsWithJSONFile:(NSString *)fileName
 {
     NSError *error = nil;
     NSMutableArray *regions = [NSMutableArray new];
     
     // Read the JSON file into a dictionary
-    NSString *dataPath = [[NSBundle mainBundle] pathForResource:FILE_NAME ofType:@"geojson" inDirectory:@"GeoJSON"];
+    NSString *dataPath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"geojson" inDirectory:@"GeoJSON"];
     NSDictionary *root = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:dataPath] options:kNilOptions error:&error];
     
     // Check error
     
-    // Iterate through the JSON array and create the CircularRegions
+    // Iterate through the JSON array and create the Regions
     NSArray *features = [root objectForKey:@"features"];
     [features enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        
+    
         // Get the data we need for CLCircularRegions
         NSDictionary *geometry = [(NSDictionary *)obj objectForKey:@"geometry"];
-        NSArray *coordinates = [geometry objectForKey:@"coordinates"];
-        double lat = [coordinates[1] doubleValue];
-        double lon = [coordinates[0] doubleValue];
-        double radius = [[geometry objectForKey:@"radius"] doubleValue];
         
-        // Create a new CLCircularRegion and add it to the array
-        CLLocationCoordinate2D center = {lat, lon};
-        NSString *identifier = [NSString stringWithFormat:@"%f, %f", lat,lon];
-        CLCircularRegion *region = [[CLCircularRegion alloc] initWithCenter:center radius:radius identifier:identifier];
+        // Get the type of feature
+        NSString *type = (NSString *)[geometry objectForKey:@"type"];
         
-        [regions addObject:region];
+        if([type isEqualToString:CIRCLE]){
+            NSArray *coordinates = [geometry objectForKey:@"coordinates"];
+            double lat = [coordinates[1] doubleValue];
+            double lon = [coordinates[0] doubleValue];
+            double radius = [[geometry objectForKey:@"radius"] doubleValue];
+            
+            // Create a new CLCircularRegion and add it to the array
+            CLLocationCoordinate2D center = {lat, lon};
+            NSString *identifier = [NSString stringWithFormat:@"%f, %f", lat,lon];
+            CLCircularRegion *region = [[CLCircularRegion alloc] initWithCenter:center radius:radius identifier:identifier];
+            
+            [regions addObject:region];
+        }
+        else if([type isEqualToString:POLYGON]){
+            // Iterate throught the co-ordinates
+            // Or create a region using the given array? (Convert to an array of CLLocationCoordinate2D's)
+        }
     }];
     
     return regions;
