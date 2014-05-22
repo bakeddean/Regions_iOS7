@@ -7,7 +7,7 @@
 //
 
 #import "RegionAnnotation.h"
-#import "BPRegion.h"
+#import "PolygonRegion.h"
 
 @implementation RegionAnnotation
 
@@ -33,13 +33,13 @@
 	return self;		
 }
 
-- (id)initWithBPRegion:(BPRegion *)newRegion {
+- (id)initWithPolygonRegion:(PolygonRegion *)region {
 	self = [self init];
 	
 	if (self != nil) {
-		self.region = newRegion;
-		self.coordinate = self.region.center;
-		self.radius = self.region.radius;
+        self.region = (PolygonRegion *)region;
+        self.radius = -1;
+        self.coordinate = CLLocationCoordinate2DMake(-41.28610290434616, 174.7782107591527);
 		self.title = @"Monitored Region";
 	}		
 

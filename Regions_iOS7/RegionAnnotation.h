@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+#import "PolygonRegion.h"
 
 @interface RegionAnnotation : NSObject <MKAnnotation>
 
@@ -20,5 +21,7 @@
 @property (nonatomic, copy) NSString *subtitle;
 
 - (id)initWithCLCircularRegion:(CLCircularRegion *)newRegion;
+//- (id)initWithRegion:(CLRegion *)region;
+- (id)initWithPolygonRegion:(PolygonRegion *)region;
 
 @end

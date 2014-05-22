@@ -19,4 +19,7 @@
 - (void)updateRadiusOverlay;
 - (void)removeRadiusOverlay;
 
+- (void)updatePolygonOverlay;
+- (void)removePolygonOverlay;
+
 @end

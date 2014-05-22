@@ -8,8 +8,9 @@
 
 #import "GeoJsonParser.h"
 #import <CoreLocation/CoreLocation.h>
-#import "BPRegion.h"
-#import "BPPolygon.h"
+//#import "BPRegion.h"
+//#import "BPPolygon.h"
+#import "PolygonRegion.h"
 
 #define FILE_NAME @"Regions"
 #define CIRCLE @"CLCircularRegion"
@@ -47,7 +48,7 @@
     
     // Iterate through the JSON array and create the Regions
     NSArray *features = [root objectForKey:@"features"];
-    NSMutableSet *polygons = [NSMutableSet new];
+    //NSMutableSet *polygons = [NSMutableSet new];
     
     [features enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     
@@ -67,7 +68,6 @@
             CLLocationCoordinate2D center = {lat, lon};
             NSString *identifier = [NSString stringWithFormat:@"%f, %f", lat,lon];
             CLCircularRegion *region = [[CLCircularRegion alloc] initWithCenter:center radius:radius identifier:identifier];
-            
             [regions addObject:region];
         }
         
@@ -77,19 +77,24 @@
             
             // Iterate through the innermost array - of length 2 containing lat,lon
             for(NSArray *points in coordinates){
-                CLLocation *loc = [[CLLocation alloc] initWithLatitude:[points[0] doubleValue] longitude:[points[1] doubleValue]];
+                CLLocation *loc = [[CLLocation alloc] initWithLatitude:[points[1] doubleValue] longitude:[points[0] doubleValue]];
                 [locations addObject:loc];
             }
             
-            // Create a polygon with our location array
-            BPPolygon *polygon = [BPPolygon polygonWithLocations:locations];
-            [polygons addObject:polygon];
+            // Create a new PolygonRegion with our location array
+            // Need to add identifier here as in Circles
+            NSString *identifier = [NSString stringWithFormat:@"%f, %f", -41.0, 174.0];
+            PolygonRegion *polygon = [PolygonRegion polygonWithLocations:locations identifier:identifier];
+            NSLog(@"Created a new polygon region in parser");
+            [regions addObject:polygon];
         }
     }];
     
+    //+ (PolygonRegion *)initPolygonRegionWithCoordinates:(NSArray *)coordinates identifier:(NSString *)identifier
+    
     // A BPRegion can be composed of many polygons, so create this after the iteration
-    BPRegion *region = [BPRegion regionWithPolygons:polygons identifier:nil];
-    [regions addObject:region];
+    //BPRegion *region = [BPRegion regionWithPolygons:polygons identifier:nil];
+    //[regions addObject:region];
     
     return regions;
 }

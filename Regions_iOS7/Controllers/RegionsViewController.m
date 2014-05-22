@@ -10,7 +10,7 @@
 #import "RegionAnnotation.h"
 #import "RegionAnnotationView.h"
 #import "GeoJsonParser.h"
-#import "BPRegion.h"
+#import "PolygonRegion.h"
 
 #define REGION_RADIUS 50
 
@@ -47,8 +47,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 
-    GeoJsonParser *parser = [GeoJsonParser sharedInstance];
-    [parser regionsWithJSONFile:@"Polygon"];
+    //GeoJsonParser *parser = [GeoJsonParser sharedInstance];
+    //[parser regionsWithJSONFile:@"Polygon"];
 
 	// Get all regions being monitored for this application ... monitored regions persist across app launches.
 	NSArray *regions = [[self.locationManager monitoredRegions] allObjects];
@@ -57,12 +57,18 @@
     if([regions count] == 0){
         GeoJsonParser *parser = [GeoJsonParser sharedInstance];
         regions = [parser regionsWithJSONFile:@"Regions"];
+        
+        // Add regions to location manager monitored regions
+        for (int i = 0; i < [regions count]; i++) {
+            [_locationManager startMonitoringForRegion:(PolygonRegion *)[regions objectAtIndex:i]];
+        }
     }
     
     // Add the regions to the map
     for (int i = 0; i < [regions count]; i++) {
         CLCircularRegion *region = [regions objectAtIndex:i];
         RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLCircularRegion:region];
+        //RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithPolygonRegion:(PolygonRegion *)[regions objectAtIndex:i]];
         [self.regionsMapView addAnnotation:annotation];
     }
     
@@ -136,6 +142,7 @@
 		RegionAnnotationView *regionView = (RegionAnnotationView *)[_regionsMapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
 		
 		if (!regionView) {
+            NSLog(@"Creating new region view");
 			regionView = [[RegionAnnotationView alloc] initWithAnnotation:annotation];
 			regionView.map = _regionsMapView;
 			
@@ -153,6 +160,8 @@
 		
 		// Update or add the overlay displaying the radius of the region around the annotation.
 		[regionView updateRadiusOverlay];
+        NSLog(@"Updating polygon overlay");
+        //[regionView updatePolygonOverlay];
 		
 		return regionView;		
 	}	
@@ -178,6 +187,8 @@
     
     // Create the view for the Polygon overlay
     else if([overlay isKindOfClass:[MKPolygon class]]){
+        NSLog(@"In map view view for overlay");
+    
         MKPolygonView *polyView = [[MKPolygonView alloc] initWithOverlay:overlay];
         polyView.lineWidth = 1;
         polyView.strokeColor = [UIColor blueColor];
@@ -265,7 +276,6 @@
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
 	NSString *event = [NSString stringWithFormat:@"monitoringDidFailForRegion %@: %@", region.identifier, error];
-	
 	[self updateWithEvent:event];
 }
 
@@ -325,22 +335,12 @@
 //------------------------------------------------------------------------------
 // Create a new polygon region - Add it to the map and start monitoring it.
 //------------------------------------------------------------------------------
-- (void)addRegionWithPolygon:(BPRegion *)region
+/*- (void)addRegion:(CLRegion *)region
  {
-    if ([CLLocationManager isMonitoringAvailableForClass:[BPRegion class]]) {
-        
-		// Create a new region based on the center of the map view.
-		CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(_regionsMapView.centerCoordinate.latitude, _regionsMapView.centerCoordinate.longitude);
-		CLCircularRegion *newRegion = [[CLCircularRegion alloc] initWithCenter:coord
-																	  radius:REGION_RADIUS
-																  identifier:[NSString stringWithFormat:@"%f, %f", _regionsMapView.centerCoordinate.latitude, _regionsMapView.centerCoordinate.longitude]];
-		
+    if ([CLLocationManager isMonitoringAvailableForClass:[CLRegion class]]) {
+    
 		// Create an annotation to show where the region is located on the map.
-		RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLCircularRegion:newRegion];
-        
-		//myRegionAnnotation.coordinate = newRegion.center;
-		//myRegionAnnotation.radius = newRegion.radius;
-		
+		RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithRegion:region];
 		[_regionsMapView addAnnotation:myRegionAnnotation];
 		
 		// Start monitoring the region.
@@ -350,7 +350,7 @@
 	else {
 		NSLog(@"Region monitoring is not available.");
 	}
-}
+}*/
 
 //------------------------------------------------------------------------------
 // This method adds the region event to the events array and updates the icon

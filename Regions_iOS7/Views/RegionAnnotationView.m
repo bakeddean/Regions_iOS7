@@ -8,9 +8,11 @@
 
 #import "RegionAnnotationView.h"
 #import "RegionAnnotation.h"
+#import "PolygonRegion.h"
 
 @implementation RegionAnnotationView{
     MKCircle *radiusOverlay;
+    MKPolygon *polygonOverlay;
 	BOOL isRadiusUpdated;
 }
 
@@ -34,9 +36,18 @@
 		self.map = nil;
 		self.theAnnotation = (RegionAnnotation *)annotation;
 		self.pinColor = MKPinAnnotationColorPurple;
-		radiusOverlay = [MKCircle circleWithCenterCoordinate:self.theAnnotation.coordinate radius:self.theAnnotation.radius];
+        
+        if(_theAnnotation.radius != -1){
+            radiusOverlay = [MKCircle circleWithCenterCoordinate:self.theAnnotation.coordinate radius:self.theAnnotation.radius];
+            [self.map addOverlay:radiusOverlay];
+        }
+        else{
+            PolygonRegion *bob = (PolygonRegion *)_theAnnotation.region;
+            polygonOverlay = [MKPolygon polygonWithCoordinates:bob.coordinates count:bob.coordinateCount];
+            [self.map addOverlay:polygonOverlay];
+        }
 
-		[self.map addOverlay:radiusOverlay];
+		//[self.map addOverlay:radiusOverlay];
 	}
 	
 	return self;	
@@ -67,6 +78,40 @@
 		[self removeRadiusOverlay];
 		self.canShowCallout = NO;
 		[self.map addOverlay:[MKCircle circleWithCenterCoordinate:self.theAnnotation.coordinate radius:self.theAnnotation.radius]];
+		self.canShowCallout = YES;		
+	}
+}
+
+
+
+- (void)removePolygonOverlay {
+	// Find the overlay for this annotation view and remove it if it has the same coordinates.
+	for (id overlay in [self.map overlays]) {
+		if ([overlay isKindOfClass:[MKPolygon class]]) {
+			MKPolygon *circleOverlay = (MKPolygon *)overlay;
+			CLLocationCoordinate2D coord = circleOverlay.coordinate;
+			
+			if (coord.latitude == self.theAnnotation.coordinate.latitude && coord.longitude == self.theAnnotation.coordinate.longitude) {
+				[self.map removeOverlay:overlay];
+			}			
+		}
+	}
+	
+	isRadiusUpdated = NO;
+}
+
+
+- (void)updatePolygonOverlay {
+	if (!isRadiusUpdated) {
+		isRadiusUpdated = YES;
+		
+		[self removePolygonOverlay];
+		self.canShowCallout = NO;
+        
+        PolygonRegion *bob = (PolygonRegion *)_theAnnotation.region;
+        polygonOverlay = [MKPolygon polygonWithCoordinates:bob.coordinates count:bob.coordinateCount];
+        [self.map addOverlay:polygonOverlay];
+		//[self.map addOverlay:[MKCircle circleWithCenterCoordinate:self.theAnnotation.coordinate radius:self.theAnnotation.radius]];
 		self.canShowCallout = YES;		
 	}
 }
