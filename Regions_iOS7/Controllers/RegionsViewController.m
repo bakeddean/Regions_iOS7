@@ -22,6 +22,8 @@
     NSArray *regions;
 }
 
+#warning Add user defaults - update map on changes
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
