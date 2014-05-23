@@ -34,6 +34,7 @@
 }
 
 - (id)initWithPolygonRegion:(PolygonRegion *)region {
+    NSLog(@"In Region Annotation - init with polygon");
 	self = [self init];
 	
 	if (self != nil) {

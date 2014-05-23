@@ -26,6 +26,8 @@
 }
 
 - (id)initWithAnnotation:(id <MKAnnotation>)annotation {
+
+    NSLog(@"In Region Annotation View - init with annotation");
 	self = [super initWithAnnotation:annotation reuseIdentifier:[annotation title]];	
 	
 	if (self) {		

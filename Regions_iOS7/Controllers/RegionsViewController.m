@@ -18,7 +18,9 @@
 
 @end
 
-@implementation RegionsViewController
+@implementation RegionsViewController{
+    NSArray *regions;
+}
 
 #pragma mark - View lifecycle
 
@@ -47,49 +49,17 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 
-    //GeoJsonParser *parser = [GeoJsonParser sharedInstance];
-    //[parser regionsWithJSONFile:@"Polygon"];
-
-	// Get all regions being monitored for this application ... monitored regions persist across app launches.
-	NSArray *regions = [[self.locationManager monitoredRegions] allObjects];
-    
-    // If the location manager has no regions, read them in from the JSON file
+    // If we have no regions, read them in from the JSON file
     if([regions count] == 0){
         GeoJsonParser *parser = [GeoJsonParser sharedInstance];
-        regions = [parser regionsWithJSONFile:@"Regions"];
-        
-        // Add regions to location manager monitored regions
-        for (int i = 0; i < [regions count]; i++) {
-            [_locationManager startMonitoringForRegion:(PolygonRegion *)[regions objectAtIndex:i]];
-        }
+        regions = [parser regionsWithJSONFile:@"Polygons"];
     }
     
     // Add the regions to the map
     for (int i = 0; i < [regions count]; i++) {
-        CLCircularRegion *region = [regions objectAtIndex:i];
-        RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithCLCircularRegion:region];
-        //RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithPolygonRegion:(PolygonRegion *)[regions objectAtIndex:i]];
+        RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithPolygonRegion:(PolygonRegion *)[regions objectAtIndex:i]];
         [self.regionsMapView addAnnotation:annotation];
     }
-    
-    //[self addPolyOverlay];
-}
-
-//------------------------------------------------------------------------------
-// Add polygon overlay for test purposes.
-//------------------------------------------------------------------------------
-- (void) addPolyOverlay
-{
-    CLLocationCoordinate2D commuterLotCoords[5]={
-        CLLocationCoordinate2DMake(-41.28610775408706, 174.77821612356817),
-        CLLocationCoordinate2DMake(-41.28633751801452, 174.77896714209527),
-        CLLocationCoordinate2DMake(-41.287837010094115, 174.7793480157743),
-        CLLocationCoordinate2DMake(-41.28792568865442, 174.77855408190538),
-        CLLocationCoordinate2DMake(-41.28610775408706, 174.77821612356817)
-    };
-    
-    MKPolygon *commuterPoly1 = [MKPolygon polygonWithCoordinates:commuterLotCoords count:5];
-    [self.regionsMapView addOverlay:commuterPoly1];
 }
 
 #pragma mark - Memory management
@@ -159,9 +129,9 @@
 		}
 		
 		// Update or add the overlay displaying the radius of the region around the annotation.
-		[regionView updateRadiusOverlay];
+		//[regionView updateRadiusOverlay];
         NSLog(@"Updating polygon overlay");
-        //[regionView updatePolygonOverlay];
+        [regionView updatePolygonOverlay];
 		
 		return regionView;		
 	}	
@@ -176,19 +146,17 @@
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
 
     // Create the view for the Circle overlay.
-	if([overlay isKindOfClass:[MKCircle class]]){
+	/*if([overlay isKindOfClass:[MKCircle class]]){
 		MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
 		circleView.strokeColor = [UIColor purpleColor];                                 // deprecated
 		circleView.fillColor = [[UIColor purpleColor] colorWithAlphaComponent:0.4];     // deprecated
         circleView.lineWidth = 1.0f;                                                    // deprecated
 		
 		return circleView;		
-	}
+	}*/
     
     // Create the view for the Polygon overlay
-    else if([overlay isKindOfClass:[MKPolygon class]]){
-        NSLog(@"In map view view for overlay");
-    
+    if([overlay isKindOfClass:[MKPolygon class]]){
         MKPolygonView *polyView = [[MKPolygonView alloc] initWithOverlay:overlay];
         polyView.lineWidth = 1;
         polyView.strokeColor = [UIColor blueColor];
@@ -257,10 +225,30 @@
 		MKCoordinateRegion userLocation = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 1500.0, 1500.0);
 		[_regionsMapView setRegion:userLocation animated:YES];
 	}
+    
+    // Check if current location is in a PolygonRegion
+    for(PolygonRegion *region in regions){
+        if(!region.isInside && [region containsCoordinate:newLocation.coordinate]){
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bounndary Crossing" message:@"Entered Monitored Region" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil, nil];
+            [alert show];
+            //NSString *event = [NSString stringWithFormat:@"Did Enter Region %@ at %@", region.identifier, [NSDate date]];
+            NSString *event = [NSString stringWithFormat:@"Did Enter Region at %@", [NSDate date]];
+            [self updateWithEvent:event];
+            region.inside = YES;
+        }
+        else if(region.isInside && ![region containsCoordinate:newLocation.coordinate]){
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bounndary Crossing" message:@"Exited Monitored Region" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil, nil];
+            [alert show];
+            //NSString *event = [NSString stringWithFormat:@"Did Enter Region %@ at %@", region.identifier, [NSDate date]];
+            NSString *event = [NSString stringWithFormat:@"Did Exit Region at %@", [NSDate date]];
+            [self updateWithEvent:event];
+            region.inside = NO;
+        }
+    }
 }
 
 
-- (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region  {
+/*- (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region  {
 	NSString *event = [NSString stringWithFormat:@"didEnterRegion %@ at %@", region.identifier, [NSDate date]];
 	
 	[self updateWithEvent:event];
@@ -277,7 +265,7 @@
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
 	NSString *event = [NSString stringWithFormat:@"monitoringDidFailForRegion %@: %@", region.identifier, error];
 	[self updateWithEvent:event];
-}
+}*/
 
 #pragma mark - RegionsViewController
 
@@ -292,9 +280,9 @@
 	self.updatesTableView.hidden = !self.updatesTableView.hidden;
 	
 	// Adjust the "add region" button to only be enabled when the map is shown.
-	NSArray *navigationBarItems = [NSArray arrayWithArray:self.navigationController.navigationBar.items];
+	/*NSArray *navigationBarItems = [NSArray arrayWithArray:self.navigationController.navigationBar.items];
 	UIBarButtonItem *addRegionButton = [[navigationBarItems objectAtIndex:0] rightBarButtonItem];
-	addRegionButton.enabled = !addRegionButton.enabled;
+	addRegionButton.enabled = !addRegionButton.enabled;*/
 	
 	// Reload the table data and update the icon badge number when the table view is shown.
 	if (!_updatesTableView.hidden) {
@@ -305,52 +293,11 @@
 //------------------------------------------------------------------------------
 // Create a new region - Add it to the map and start monitoring it.
 //------------------------------------------------------------------------------
-- (IBAction)addRegion {
-    if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) {
-        
-		// Create a new region based on the center of the map view.
-		CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(_regionsMapView.centerCoordinate.latitude, _regionsMapView.centerCoordinate.longitude);
-		CLCircularRegion *newRegion = [[CLCircularRegion alloc] initWithCenter:coord
-																	  radius:REGION_RADIUS
-																  identifier:[NSString stringWithFormat:@"%f, %f", _regionsMapView.centerCoordinate.latitude, _regionsMapView.centerCoordinate.longitude]];
-		
-		// Create an annotation to show where the region is located on the map.
-		RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLCircularRegion:newRegion];
-        
-        // Why is this here? done in initWithCLCircularRegion
-		//myRegionAnnotation.coordinate = newRegion.center;
-		//myRegionAnnotation.radius = newRegion.radius;
-		
-		[_regionsMapView addAnnotation:myRegionAnnotation];
-		
-		// Start monitoring the newly created region.
-		[_locationManager startMonitoringForRegion:newRegion];// desiredAccuracy:kCLLocationAccuracyBest];
-		
-	}
-	else {
-		NSLog(@"Region monitoring is not available.");
-	}
-}
-
-//------------------------------------------------------------------------------
-// Create a new polygon region - Add it to the map and start monitoring it.
-//------------------------------------------------------------------------------
-/*- (void)addRegion:(CLRegion *)region
- {
-    if ([CLLocationManager isMonitoringAvailableForClass:[CLRegion class]]) {
+- (IBAction)settings {
+    NSLog(@"Seetings button pushed");
+   // UIActionSheet *settingsActionSheet = [[UIActionSheet alloc]initWithTitle:<#(NSString *)#> delegate:<#(id<UIActionSheetDelegate>)#> cancelButtonTitle:<#(NSString *)#> destructiveButtonTitle:<#(NSString *)#> otherButtonTitles:<#(NSString *), ...#>, nil]
     
-		// Create an annotation to show where the region is located on the map.
-		RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithRegion:region];
-		[_regionsMapView addAnnotation:myRegionAnnotation];
-		
-		// Start monitoring the region.
-		[_locationManager startMonitoringForRegion:region];
-		
-	}
-	else {
-		NSLog(@"Region monitoring is not available.");
-	}
-}*/
+}
 
 //------------------------------------------------------------------------------
 // This method adds the region event to the events array and updates the icon

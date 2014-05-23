@@ -10,16 +10,17 @@
 
 @interface PolygonRegion : CLRegion
 
-+ (PolygonRegion *)polygonWithCoordinates:(CLLocationCoordinate2D *)coordinates count:(NSUInteger)count identifier:(NSString *)identifier;
-+ (PolygonRegion *)polygonWithLocations:(NSArray *)locations identifier:(NSString *)identifier;
++ (PolygonRegion *)polygonWithCoordinates:(CLLocationCoordinate2D *)coordinates count:(NSUInteger)count;
++ (PolygonRegion *)polygonWithLocations:(NSArray *)locations;
 
 @property (nonatomic, readonly) CLLocationCoordinate2D *coordinates;
 @property (nonatomic, readonly) NSUInteger coordinateCount;
+@property (nonatomic, assign, getter = isInside) BOOL inside;
 
 - (id)initWithCoordinates:(CLLocationCoordinate2D *)coordinates count:(NSUInteger)count;
 - (BOOL)containsCoordinate:(CLLocationCoordinate2D)coordinate;
 
 // Deans method
-+ (PolygonRegion *)initPolygonRegionWithCoordinates:(NSArray *)coordinates identifier:(NSString *)identifier;
+//+ (PolygonRegion *)initPolygonRegionWithCoordinates:(NSArray *)coordinates identifier:(NSString *)identifier;
 
 @end

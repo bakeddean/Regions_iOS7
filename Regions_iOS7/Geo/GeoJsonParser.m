@@ -8,14 +8,10 @@
 
 #import "GeoJsonParser.h"
 #import <CoreLocation/CoreLocation.h>
-//#import "BPRegion.h"
-//#import "BPPolygon.h"
 #import "PolygonRegion.h"
 
-#define FILE_NAME @"Regions"
 #define CIRCLE @"CLCircularRegion"
 #define POLYGON @"Polygon"
-
 
 @implementation GeoJsonParser
 
@@ -48,7 +44,6 @@
     
     // Iterate through the JSON array and create the Regions
     NSArray *features = [root objectForKey:@"features"];
-    //NSMutableSet *polygons = [NSMutableSet new];
     
     [features enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     
@@ -82,19 +77,12 @@
             }
             
             // Create a new PolygonRegion with our location array
-            // Need to add identifier here as in Circles
-            NSString *identifier = [NSString stringWithFormat:@"%f, %f", -41.0, 174.0];
-            PolygonRegion *polygon = [PolygonRegion polygonWithLocations:locations identifier:identifier];
-            NSLog(@"Created a new polygon region in parser");
+            // Need to get a center some how? - or do this in PolygonRegion initialiser
+            //NSString *identifier = [NSString stringWithFormat:@"%f, %f", -41.0, 174.0];
+            PolygonRegion *polygon = [PolygonRegion polygonWithLocations:locations];
             [regions addObject:polygon];
         }
     }];
-    
-    //+ (PolygonRegion *)initPolygonRegionWithCoordinates:(NSArray *)coordinates identifier:(NSString *)identifier
-    
-    // A BPRegion can be composed of many polygons, so create this after the iteration
-    //BPRegion *region = [BPRegion regionWithPolygons:polygons identifier:nil];
-    //[regions addObject:region];
     
     return regions;
 }

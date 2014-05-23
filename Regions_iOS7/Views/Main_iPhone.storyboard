@@ -61,9 +61,9 @@
                                 <action selector="switchView" destination="vXZ-lx-hvc" eventType="valueChanged" id="uDD-Wb-OTT"/>
                             </connections>
                         </segmentedControl>
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="qMu-SZ-pJc">
+                        <barButtonItem key="rightBarButtonItem" image="Settings" id="qMu-SZ-pJc">
                             <connections>
-                                <action selector="addRegion" destination="vXZ-lx-hvc" id="EPr-Hx-Mfe"/>
+                                <action selector="settings" destination="vXZ-lx-hvc" id="yB8-dW-aOw"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -95,6 +95,9 @@
             <point key="canvasLocation" x="348" y="138"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Settings" width="26" height="26"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

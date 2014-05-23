@@ -25,21 +25,21 @@
     return [[self alloc] initWithCoordinates:coordinates count:count];
 }
 
-+ (PolygonRegion *)polygonWithLocations:(NSArray *)locations identifier:(NSString *)identifier;
++ (PolygonRegion *)polygonWithLocations:(NSArray *)locations;
 {
-    int count = [locations count];
+    NSUInteger count = [locations count];
     CLLocationCoordinate2D cArray[count];
     for (int i = 0; i < count; i++){
         cArray[i] = [[locations objectAtIndex:i] coordinate];
     }
     
-    return [[self alloc] initWithCoordinates:cArray count:count identifier:identifier];
+    return [[self alloc] initWithCoordinates:cArray count:count];
 }
 
 //------------------------------------------------------------------------------
 // Initialise a Polygon region. Coordinates not required to be closed.
 //------------------------------------------------------------------------------
-- (id)initWithCoordinates:(CLLocationCoordinate2D *)coordinates count:(NSUInteger)count identifier:(NSString *)identifier;
+- (id)initWithCoordinates:(CLLocationCoordinate2D *)coordinates count:(NSUInteger)count;
 {
     NSAssert(count > 2, @"Need more than two coordinates to make a polygon");
     
@@ -52,7 +52,8 @@
     memcpy(_coordinates, coordinates, count * sizeof(CLLocationCoordinate2D));
     
     _coordinateCount = count;
-    _overriddenIdentifier = identifier;
+    //_overriddenIdentifier = identifier;
+    _inside = NO;
     
     return self;
 }
@@ -60,7 +61,7 @@
 //------------------------------------------------------------------------------
 // Initialise a Polygon region. Coordinates not required to be closed.
 //------------------------------------------------------------------------------
-+ (PolygonRegion *)initPolygonRegionWithCoordinates:(NSArray *)coordinates identifier:(NSString *)identifier
+/*+ (PolygonRegion *)initPolygonRegionWithCoordinates:(NSArray *)coordinates identifier:(NSString *)identifier
 {
     NSUInteger count = [coordinates count];
     NSAssert(count > 2, @"Need more than two coordinates to make a polygon");
@@ -79,7 +80,7 @@
     // Need to add identifier
     
     return [[self alloc] initWithCoordinates:cArray count:count];
-}
+}*/
 
 - (void)dealloc;
 {
@@ -95,7 +96,6 @@
 {
     return self.overriddenIdentifier;
 }
-
 
 //------------------------------------------------------------------------------
 // Test if the Polygon contains the given coordinate. Overides CLRegion method.
