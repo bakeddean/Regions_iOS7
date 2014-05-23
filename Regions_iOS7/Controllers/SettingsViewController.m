@@ -8,6 +8,14 @@
 
 #import "SettingsViewController.h"
 
+#define OVERLAY_SWITCH 11
+#define LOCAL_NOTIFICATIONS_SWITCH 21
+#define FORCE_QUIT_SWITCH 31
+
+#define OVERLAY_KEY @"Overlay_default"
+#define LOCAL_NOTIFICATIONS_KEY @"Local_notification_default"
+#define FORCE_QUIT_KEY @"Force_quit_default"
+
 @interface SettingsViewController ()
 
 @property (nonatomic, weak) IBOutlet UISwitch *showOverlaysSwitch;
@@ -36,19 +44,49 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+//------------------------------------------------------------------------------
+// Set the settings switches according to the appropriate user default.
+//------------------------------------------------------------------------------
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    _showOverlaysSwitch.on = [defaults boolForKey:OVERLAY_KEY];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-// Connect a bunch of actions here?
-// Update user defaults
-- (IBAction)mapOverlaySwitchValueChanged:(UISwitch *)sender {
-    if(sender.isOn)
-        NSLog(@"Switch is on");
-    else
-        NSLog(@"Switch is off");
+- (IBAction)cancel:(UIBarButtonItem *)sender
+{
+}
+
+//------------------------------------------------------------------------------
+// Handle settings switch changes. Get the switch that changed and update
+// the appropriate user default.
+//------------------------------------------------------------------------------
+- (IBAction)settingsSwitchValueChanged:(UISwitch *)sender
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    switch (sender.tag) {
+        case OVERLAY_SWITCH:
+            [defaults setBool:sender.isOn forKey:OVERLAY_KEY];
+        break;
+        case LOCAL_NOTIFICATIONS_SWITCH:
+            [defaults setBool:sender.isOn forKey:LOCAL_NOTIFICATIONS_KEY];
+        break;
+        case FORCE_QUIT_SWITCH:
+            [defaults setBool:sender.isOn forKey:FORCE_QUIT_KEY];
+        break;
+
+        default:
+        break;
+    }
 }
 
 #pragma mark - Table view data source
@@ -56,12 +94,11 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
     return 1;
 }

@@ -13,6 +13,7 @@
 #import "PolygonRegion.h"
 
 #define REGION_RADIUS 50
+#define OVERLAY_COLOR [UIColor colorWithRed:50/255.0f green:200/255.0f blue:20/255.0f alpha:1.0]
 
 @interface RegionsViewController ()
 
@@ -21,8 +22,6 @@
 @implementation RegionsViewController{
     NSArray *regions;
 }
-
-#warning Add user defaults - update map on changes
 
 #pragma mark - View lifecycle
 
@@ -49,18 +48,44 @@
     _regionsMapView.showsUserLocation = YES;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
 
     // If we have no regions, read them in from the JSON file
     if([regions count] == 0){
         GeoJsonParser *parser = [GeoJsonParser sharedInstance];
-        regions = [parser regionsWithJSONFile:@"Polygons"];
+        regions = [parser regionsWithJSONFile:@"data"];
     }
     
     // Add the regions to the map
     for (int i = 0; i < [regions count]; i++) {
         RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithPolygonRegion:(PolygonRegion *)[regions objectAtIndex:i]];
         [self.regionsMapView addAnnotation:annotation];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
+}
+
+#pragma mark - Settings
+
+//------------------------------------------------------------------------------
+// Handle settings changes. Update appplication accordingly.
+//------------------------------------------------------------------------------
+-(void) onDefaultsChanged:(NSNotification*)notification
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL showOverlays = [defaults boolForKey:@"Overlay_default"];
+    if(!showOverlays){
+        [_regionsMapView removeOverlays:[_regionsMapView overlays]];
     }
 }
 
@@ -91,11 +116,15 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
-    
+    NSString *event = [self.updateEvents objectAtIndex:indexPath.row];
 	cell.textLabel.font = [UIFont systemFontOfSize:15.0];
-	cell.textLabel.text = [self.updateEvents objectAtIndex:indexPath.row];
+	cell.textLabel.text = event;
 	cell.textLabel.numberOfLines = 4;
-	
+    
+    if([event rangeOfString:@"Enter"].location != NSNotFound)
+        cell.imageView.image = [UIImage imageNamed:@"UpArrow"];
+    else
+        cell.imageView.image = [UIImage imageNamed:@"DownArrow"];
     return cell;
 }
 
@@ -145,28 +174,16 @@
 // Return the overlay view to use when displaying the specified overlay object.
 // (Deprecated in iOS 7.0. Implement the mapView:rendererForOverlay: method
 //------------------------------------------------------------------------------
-- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
-
-    // Create the view for the Circle overlay.
-	/*if([overlay isKindOfClass:[MKCircle class]]){
-		MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
-		circleView.strokeColor = [UIColor purpleColor];                                 // deprecated
-		circleView.fillColor = [[UIColor purpleColor] colorWithAlphaComponent:0.4];     // deprecated
-        circleView.lineWidth = 1.0f;                                                    // deprecated
-		
-		return circleView;		
-	}*/
-    
+- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay
+{
     // Create the view for the Polygon overlay
     if([overlay isKindOfClass:[MKPolygon class]]){
         MKPolygonView *polyView = [[MKPolygonView alloc] initWithOverlay:overlay];
         polyView.lineWidth = 1;
-        polyView.strokeColor = [UIColor blueColor];
-        polyView.fillColor = [[UIColor blueColor] colorWithAlphaComponent:0.5];
-        
+        polyView.strokeColor = OVERLAY_COLOR;
+        polyView.fillColor = [OVERLAY_COLOR colorWithAlphaComponent:0.5];
         return polyView;
     }
-	
 	return nil;
 }
 
@@ -230,16 +247,19 @@
     
     // Check if current location is in a PolygonRegion
     for(PolygonRegion *region in regions){
+    
+        // Entered region
         if(!region.isInside && [region containsCoordinate:newLocation.coordinate]){
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bounndary Crossing" message:@"Entered Monitored Region" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil, nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Boundary Crossing" message:@"Entered Monitored Region" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil, nil];
             [alert show];
             //NSString *event = [NSString stringWithFormat:@"Did Enter Region %@ at %@", region.identifier, [NSDate date]];
             NSString *event = [NSString stringWithFormat:@"Did Enter Region at %@", [NSDate date]];
             [self updateWithEvent:event];
             region.inside = YES;
         }
+        // Exited region
         else if(region.isInside && ![region containsCoordinate:newLocation.coordinate]){
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bounndary Crossing" message:@"Exited Monitored Region" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil, nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Boundary Crossing" message:@"Exited Monitored Region" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil, nil];
             [alert show];
             //NSString *event = [NSString stringWithFormat:@"Did Enter Region %@ at %@", region.identifier, [NSDate date]];
             NSString *event = [NSString stringWithFormat:@"Did Exit Region at %@", [NSDate date]];
@@ -296,7 +316,7 @@
 // Create a new region - Add it to the map and start monitoring it.
 //------------------------------------------------------------------------------
 - (IBAction)settings {
-    NSLog(@"Seetings button pushed");
+    NSLog(@"Settings button pushed");
    // UIActionSheet *settingsActionSheet = [[UIActionSheet alloc]initWithTitle:<#(NSString *)#> delegate:<#(id<UIActionSheetDelegate>)#> cancelButtonTitle:<#(NSString *)#> destructiveButtonTitle:<#(NSString *)#> otherButtonTitles:<#(NSString *), ...#>, nil]
     
 }
