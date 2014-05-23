@@ -26,8 +26,6 @@
 		054DAEBB192470B900343E55 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 054DAEBA192470B900343E55 /* CoreLocation.framework */; };
 		054DAEBF1924718300343E55 /* RegionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 054DAEBE1924718300343E55 /* RegionsViewController.m */; };
 		054DAEC119247FD800343E55 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 054DAEC019247FD800343E55 /* MapKit.framework */; };
-		057DCB5A192C5BF500C2BE36 /* BPPolygon.m in Sources */ = {isa = PBXBuildFile; fileRef = 057DCB57192C5BF500C2BE36 /* BPPolygon.m */; };
-		057DCB5B192C5BF500C2BE36 /* BPRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = 057DCB59192C5BF500C2BE36 /* BPRegion.m */; };
 		057DCB60192D6E1200C2BE36 /* GeoJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 057DCB5F192D6E1200C2BE36 /* GeoJsonParser.m */; };
 		057DCB63192D6E4B00C2BE36 /* PolygonRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = 057DCB62192D6E4B00C2BE36 /* PolygonRegion.m */; };
 		057DCB66192ECDC300C2BE36 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 057DCB65192ECDC300C2BE36 /* SettingsViewController.m */; };
@@ -71,10 +69,6 @@
 		054DAEBD1924718300343E55 /* RegionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegionsViewController.h; sourceTree = "<group>"; };
 		054DAEBE1924718300343E55 /* RegionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionsViewController.m; sourceTree = "<group>"; };
 		054DAEC019247FD800343E55 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		057DCB56192C5BF500C2BE36 /* BPPolygon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPolygon.h; sourceTree = "<group>"; };
-		057DCB57192C5BF500C2BE36 /* BPPolygon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPolygon.m; sourceTree = "<group>"; };
-		057DCB58192C5BF500C2BE36 /* BPRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPRegion.h; sourceTree = "<group>"; };
-		057DCB59192C5BF500C2BE36 /* BPRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPRegion.m; sourceTree = "<group>"; };
 		057DCB5E192D6E1200C2BE36 /* GeoJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoJsonParser.h; sourceTree = "<group>"; };
 		057DCB5F192D6E1200C2BE36 /* GeoJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoJsonParser.m; sourceTree = "<group>"; };
 		057DCB61192D6E4B00C2BE36 /* PolygonRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolygonRegion.h; sourceTree = "<group>"; };
@@ -214,20 +208,8 @@
 		057DCB4E192C5B2100C2BE36 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				057DCB55192C5BF500C2BE36 /* BorderPatrol */,
 			);
 			path = Libraries;
-			sourceTree = "<group>";
-		};
-		057DCB55192C5BF500C2BE36 /* BorderPatrol */ = {
-			isa = PBXGroup;
-			children = (
-				057DCB56192C5BF500C2BE36 /* BPPolygon.h */,
-				057DCB57192C5BF500C2BE36 /* BPPolygon.m */,
-				057DCB58192C5BF500C2BE36 /* BPRegion.h */,
-				057DCB59192C5BF500C2BE36 /* BPRegion.m */,
-			);
-			path = BorderPatrol;
 			sourceTree = "<group>";
 		};
 		057DCB5D192D6E1200C2BE36 /* Geo */ = {
@@ -343,12 +325,10 @@
 				0521125C19256C0F003D53D0 /* RegionAnnotation.m in Sources */,
 				0521125F19256F20003D53D0 /* RegionAnnotationView.m in Sources */,
 				057DCB63192D6E4B00C2BE36 /* PolygonRegion.m in Sources */,
-				057DCB5B192C5BF500C2BE36 /* BPRegion.m in Sources */,
 				054DAEBF1924718300343E55 /* RegionsViewController.m in Sources */,
 				057DCB60192D6E1200C2BE36 /* GeoJsonParser.m in Sources */,
 				054DAE8B19246DF200343E55 /* AppDelegate.m in Sources */,
 				057DCB66192ECDC300C2BE36 /* SettingsViewController.m in Sources */,
-				057DCB5A192C5BF500C2BE36 /* BPPolygon.m in Sources */,
 				054DAE8719246DF200343E55 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
