@@ -16,6 +16,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    // Handle notification if the application is being opened due to a notification
+    UILocalNotification *localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if (localNotification) {
+        NSLog(@"Notification Body: %@",localNotification.alertBody); NSLog(@"%@", localNotification.userInfo);
+    }
+    application.applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    
     return YES;
 }
 							
@@ -85,9 +94,12 @@
 		[rvc.updatesTableView reloadData];
 			
 		// Reset the icon badge number to zero.
-		[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+		//[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 	}
     
+    // Reset the icon badge number to zero.
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

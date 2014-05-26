@@ -303,6 +303,7 @@
     // Check if current location is in a PolygonRegion
     // TODO - logic with reguard to overlapping polygons
     for(PolygonRegion *region in regions){
+        NSLog(@"Checking region");
     
         // Entered region
         if(!region.isInside && [region containsCoordinate:newLocation.coordinate]){
@@ -318,7 +319,7 @@
             [self updateWithEvent:event];
             
             region.inside = YES;
-            break;
+            //break;
         }
         // Exited region
         else if(region.isInside && ![region containsCoordinate:newLocation.coordinate]){
@@ -333,7 +334,7 @@
             [self updateWithEvent:event];
             
             region.inside = NO;
-            break; // ?
+            //break; // ?
         }
     }
 }
@@ -384,6 +385,10 @@
     
 }
 
+- (IBAction)done:(UIBarButtonItem *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 //------------------------------------------------------------------------------
 // Add the region event to the events array and update the icon
 // badge number. *** TODO - add local notifications ****
@@ -394,6 +399,15 @@
 	
 	// Update the icon badge number.
 	[UIApplication sharedApplication].applicationIconBadgeNumber++;
+    
+    // Create a local notification
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.fireDate = [NSDate date];
+    notification.timeZone = [NSTimeZone defaultTimeZone];
+    notification.alertBody = @"Entered Region";
+    notification.soundName = UILocalNotificationDefaultSoundName;
+    notification.applicationIconBadgeNumber = 1;
+    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
 	
 	if (!self.updatesTableView.hidden) {
 		[self.updatesTableView reloadData];
