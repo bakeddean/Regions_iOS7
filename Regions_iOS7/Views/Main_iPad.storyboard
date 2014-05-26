@@ -65,9 +65,7 @@
                         </segmentedControl>
                         <barButtonItem key="rightBarButtonItem" image="Settings" id="V1p-9g-vhx">
                             <connections>
-                                <segue destination="M5A-PA-Vbs" kind="popover" popoverAnchorBarButtonItem="V1p-9g-vhx" id="qS1-uC-Obs">
-                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
-                                </segue>
+                                <segue destination="M5A-PA-Vbs" kind="modal" modalPresentationStyle="formSheet" id="HCl-3s-RMH"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -93,7 +91,7 @@
                             <tableViewSection headerTitle="Map" id="XuD-w7-plV">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Map_overlays" id="IMj-9u-bRq">
-                                        <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="66" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="IMj-9u-bRq" id="JMY-Vv-lhr">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -127,7 +125,7 @@
                             <tableViewSection headerTitle="Notifications" id="EQJ-xg-Y2Q">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="ngC-rX-kOF">
-                                        <rect key="frame" x="0.0" y="152" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="132" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ngC-rX-kOF" id="Mdf-1U-EA2">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -162,7 +160,7 @@
                             <tableViewSection headerTitle="Application" id="c48-K0-357">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Zsn-x4-ZVp">
-                                        <rect key="frame" x="0.0" y="218" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="198" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Zsn-x4-ZVp" id="5Vp-oc-dai">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>

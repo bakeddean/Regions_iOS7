@@ -13,15 +13,20 @@
 #import "PolygonRegion.h"
 
 #define REGION_RADIUS 50
-#define OVERLAY_COLOR [UIColor colorWithRed:50/255.0f green:200/255.0f blue:20/255.0f alpha:1.0]
+#define OVERLAY_COLOR [UIColor colorWithRed:200/255.0f green:20/255.0f blue:20/255.0f alpha:1.0]
 
 @interface RegionsViewController ()
+
+@property (nonatomic, strong) UITapGestureRecognizer *tapBehindGesture;
+@property (nonatomic, strong, readonly) NSDateFormatter *dateFormatter;
 
 @end
 
 @implementation RegionsViewController{
     NSArray *regions;
 }
+
+@synthesize dateFormatter = _dateFormatter;
 
 #pragma mark - View lifecycle
 
@@ -46,12 +51,22 @@
     
     _regionsMapView.delegate = self;
     _regionsMapView.showsUserLocation = YES;
+    
+    // Set up the tap gesture recognizer for dismissing the settings form
+    // TODO - add this in init with hnib or something?
+    if(!_tapBehindGesture) {
+        _tapBehindGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapBehindDetected:)];
+        [_tapBehindGesture setNumberOfTapsRequired:1];
+        [_tapBehindGesture setCancelsTouchesInView:NO]; //So the user can still interact with controls in the modal view
+    }
+
+    [self.view.window addGestureRecognizer:_tapBehindGesture];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -64,18 +79,56 @@
     
     // Add the regions to the map
     for (int i = 0; i < [regions count]; i++) {
-        RegionAnnotation *annotation = [[RegionAnnotation alloc] initWithPolygonRegion:(PolygonRegion *)[regions objectAtIndex:i]];
-        [self.regionsMapView addAnnotation:annotation];
+        PolygonRegion *region = [regions objectAtIndex:i];
+        MKPolygon *regionOverlay = [MKPolygon polygonWithCoordinates:region.coordinates count:region.coordinateCount];
+        [self.regionsMapView addOverlay:regionOverlay];
     }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
+    //[[NSNotificationCenter defaultCenter]removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
+}
+
+#pragma mark - Date Formatter
+
+//------------------------------------------------------------------------------
+// Set up a date formatter with local format and short date/time.
+//------------------------------------------------------------------------------
+- (NSDateFormatter *)dateFormatter
+{
+    if(!_dateFormatter){
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+        [_dateFormatter setDateStyle:NSDateFormatterShortStyle];
+        NSLocale *currentLocale = [NSLocale currentLocale];
+        [_dateFormatter setLocale:currentLocale];
+    }
+    return _dateFormatter;
 }
 
 #pragma mark - Settings
+
+//------------------------------------------------------------------------------
+// Test if the user has tapped outside of the settings screen. If so dismiss
+// the settings form.
+//------------------------------------------------------------------------------
+- (void)tapBehindDetected:(UITapGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateEnded)
+    {
+        CGPoint location = [sender locationInView:nil]; //Passing nil gives us coordinates in the window
+
+        // Convert tap location into the local view's coordinate system. If outside, dismiss the view.
+        if (![self.presentedViewController.view pointInside:[self.presentedViewController.view convertPoint:location fromView:self.view.window] withEvent:nil])
+        {   
+            if(self.presentedViewController) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
+        }
+    }
+}
 
 //------------------------------------------------------------------------------
 // Handle settings changes. Update appplication accordingly.
@@ -135,7 +188,7 @@
 
 #pragma mark - MKMapViewDelegate
 
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+/*- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
 	if([annotation isKindOfClass:[RegionAnnotation class]]) {
     
 		RegionAnnotation *currentAnnotation = (RegionAnnotation *)annotation;
@@ -168,17 +221,17 @@
 	}	
 	
 	return nil;	
-}
+}*/
 
 //------------------------------------------------------------------------------
-// Return the overlay view to use when displaying the specified overlay object.
-// (Deprecated in iOS 7.0. Implement the mapView:rendererForOverlay: method
+// Return the overlay renderer to use when displaying the specified overlay
+// object.
 //------------------------------------------------------------------------------
-- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay
 {
-    // Create the view for the Polygon overlay
+    // Create the renderer for the Polygon overlay
     if([overlay isKindOfClass:[MKPolygon class]]){
-        MKPolygonView *polyView = [[MKPolygonView alloc] initWithOverlay:overlay];
+        MKPolygonRenderer *polyView = [[MKPolygonRenderer alloc] initWithPolygon:(MKPolygon *)overlay];
         polyView.lineWidth = 1;
         polyView.strokeColor = OVERLAY_COLOR;
         polyView.fillColor = [OVERLAY_COLOR colorWithAlphaComponent:0.5];
@@ -188,7 +241,7 @@
 }
 
 
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)annotationView didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
+/*- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)annotationView didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
 	if([annotationView isKindOfClass:[RegionAnnotationView class]]) {
 		RegionAnnotationView *regionView = (RegionAnnotationView *)annotationView;
 		RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
@@ -211,13 +264,13 @@
 			[_locationManager startMonitoringForRegion:regionAnnotation.region];// desiredAccuracy:kCLLocationAccuracyBest];
 		}		
 	}	
-}
+}*/
 
 //------------------------------------------------------------------------------
 // User has tapped the delete button on the callout. Remove the annotation and
 // stop monitoring the region.
 //------------------------------------------------------------------------------
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
+/*- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
 	RegionAnnotationView *regionView = (RegionAnnotationView *)view;
 	RegionAnnotation *regionAnnotation = (RegionAnnotation *)regionView.annotation;
 	
@@ -225,7 +278,7 @@
 	[_locationManager stopMonitoringForRegion:regionAnnotation.region];
 	[regionView removeRadiusOverlay];
 	[_regionsMapView removeAnnotation:regionAnnotation];
-}
+}*/
 
 
 #pragma mark - CLLocationManagerDelegate
@@ -234,7 +287,9 @@
 	NSLog(@"didFailWithError: %@", error);
 }
 
-
+//------------------------------------------------------------------------------
+// 
+//------------------------------------------------------------------------------
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
 	NSLog(@"didUpdateToLocation %@ from %@", newLocation, oldLocation);
 	
@@ -246,25 +301,39 @@
 	}
     
     // Check if current location is in a PolygonRegion
+    // TODO - logic with reguard to overlapping polygons
     for(PolygonRegion *region in regions){
     
         // Entered region
         if(!region.isInside && [region containsCoordinate:newLocation.coordinate]){
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Boundary Crossing" message:@"Entered Monitored Region" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil, nil];
+        
+            // Alert the user
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Boundary Crossing" message:@"Entered Monitored Region" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
             //NSString *event = [NSString stringWithFormat:@"Did Enter Region %@ at %@", region.identifier, [NSDate date]];
-            NSString *event = [NSString stringWithFormat:@"Did Enter Region at %@", [NSDate date]];
+            
+            // Create event and update array/table
+            NSString *dateString = [self.dateFormatter stringFromDate:[NSDate date]];
+            NSString *event = [NSString stringWithFormat:@"Entered Monitored Region at %@", dateString];
             [self updateWithEvent:event];
+            
             region.inside = YES;
+            break;
         }
         // Exited region
         else if(region.isInside && ![region containsCoordinate:newLocation.coordinate]){
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Boundary Crossing" message:@"Exited Monitored Region" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil, nil];
+        
+            // Alert the user
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Boundary Crossing" message:@"Exited Monitored Region" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
-            //NSString *event = [NSString stringWithFormat:@"Did Enter Region %@ at %@", region.identifier, [NSDate date]];
-            NSString *event = [NSString stringWithFormat:@"Did Exit Region at %@", [NSDate date]];
+            
+            // Create event and update array/table
+            NSString *dateString = [self.dateFormatter stringFromDate:[NSDate date]];
+            NSString *event = [NSString stringWithFormat:@"Exited Monitored Region at %@", dateString];
             [self updateWithEvent:event];
+            
             region.inside = NO;
+            break; // ?
         }
     }
 }
@@ -292,20 +361,14 @@
 #pragma mark - RegionsViewController
 
 //------------------------------------------------------------------------------
-// This method swaps the visibility of the map view and the table of region
-// events. The "add region" button in the navigation bar is also altered to only
-// be enabled when the map is shown.
+// Swap the visibility of the map view and the table of region events.
 //------------------------------------------------------------------------------
-- (IBAction)switchView {
+- (IBAction)switchView
+{
 	// Swap the hidden status of the map and table view so that the appropriate one is now showing.
 	self.regionsMapView.hidden = !self.regionsMapView.hidden;
 	self.updatesTableView.hidden = !self.updatesTableView.hidden;
-	
-	// Adjust the "add region" button to only be enabled when the map is shown.
-	/*NSArray *navigationBarItems = [NSArray arrayWithArray:self.navigationController.navigationBar.items];
-	UIBarButtonItem *addRegionButton = [[navigationBarItems objectAtIndex:0] rightBarButtonItem];
-	addRegionButton.enabled = !addRegionButton.enabled;*/
-	
+		
 	// Reload the table data and update the icon badge number when the table view is shown.
 	if (!_updatesTableView.hidden) {
 		[_updatesTableView reloadData];
@@ -322,8 +385,8 @@
 }
 
 //------------------------------------------------------------------------------
-// This method adds the region event to the events array and updates the icon
-// badge number.
+// Add the region event to the events array and update the icon
+// badge number. *** TODO - add local notifications ****
 //------------------------------------------------------------------------------
 - (void)updateWithEvent:(NSString *)event {
 	// Add region event to the updates array.
