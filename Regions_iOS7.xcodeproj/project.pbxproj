@@ -29,7 +29,6 @@
 		057DCB60192D6E1200C2BE36 /* GeoJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 057DCB5F192D6E1200C2BE36 /* GeoJsonParser.m */; };
 		057DCB63192D6E4B00C2BE36 /* PolygonRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = 057DCB62192D6E4B00C2BE36 /* PolygonRegion.m */; };
 		057DCB66192ECDC300C2BE36 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 057DCB65192ECDC300C2BE36 /* SettingsViewController.m */; };
-		05A4D9361932F3A400AD3160 /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05A4D9351932F3A400AD3160 /* MenuViewController.m */; };
 		05C1155D192969E90097C8F7 /* GeoJSON in Resources */ = {isa = PBXBuildFile; fileRef = 05C1155C192969E90097C8F7 /* GeoJSON */; };
 /* End PBXBuildFile section */
 
@@ -76,8 +75,6 @@
 		057DCB62192D6E4B00C2BE36 /* PolygonRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PolygonRegion.m; sourceTree = "<group>"; };
 		057DCB64192ECDC300C2BE36 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		057DCB65192ECDC300C2BE36 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		05A4D9341932F3A400AD3160 /* MenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuViewController.h; sourceTree = "<group>"; };
-		05A4D9351932F3A400AD3160 /* MenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuViewController.m; sourceTree = "<group>"; };
 		05C1155C192969E90097C8F7 /* GeoJSON */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GeoJSON; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -204,8 +201,6 @@
 				054DAEBE1924718300343E55 /* RegionsViewController.m */,
 				057DCB64192ECDC300C2BE36 /* SettingsViewController.h */,
 				057DCB65192ECDC300C2BE36 /* SettingsViewController.m */,
-				05A4D9341932F3A400AD3160 /* MenuViewController.h */,
-				05A4D9351932F3A400AD3160 /* MenuViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -328,7 +323,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0521125C19256C0F003D53D0 /* RegionAnnotation.m in Sources */,
-				05A4D9361932F3A400AD3160 /* MenuViewController.m in Sources */,
 				0521125F19256F20003D53D0 /* RegionAnnotationView.m in Sources */,
 				057DCB63192D6E4B00C2BE36 /* PolygonRegion.m in Sources */,
 				054DAEBF1924718300343E55 /* RegionsViewController.m in Sources */,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="zNv-ET-Jd4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="VPW-N5-FKo">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -51,11 +51,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="EqH-RT-JmD">
                         <nil key="title"/>
-                        <barButtonItem key="leftBarButtonItem" systemItem="done" id="gwe-ry-uwf">
-                            <connections>
-                                <action selector="done:" destination="vXZ-lx-hvc" id="OjP-mL-Tka"/>
-                            </connections>
-                        </barButtonItem>
                         <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="07c-lI-xWG">
                             <rect key="frame" x="95" y="7" width="131" height="31"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -81,65 +76,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="877" y="138"/>
-        </scene>
-        <!--Menu View Controller-->
-        <scene sceneID="elc-C7-AoJ">
-            <objects>
-                <viewController id="zNv-ET-Jd4" customClass="MenuViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="veq-qC-pHt"/>
-                        <viewControllerLayoutGuide type="bottom" id="UtR-zg-yl9"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="d8A-tv-LAD">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Zu-a1-EdV">
-                                <rect key="frame" x="20" y="215" width="280" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="280" id="M8W-eZ-4I0"/>
-                                    <constraint firstAttribute="height" constant="30" id="TM9-kH-2pC"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                <state key="normal" title="Polygon Region">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <segue destination="VPW-N5-FKo" kind="modal" modalTransitionStyle="crossDissolve" id="bXF-rD-6sf"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MHf-no-Lme">
-                                <rect key="frame" x="20" y="305" width="280" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="0OV-NL-MOR"/>
-                                    <constraint firstAttribute="width" constant="280" id="7mI-VN-5MC"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                <state key="normal" title="Circular Region">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.76283074819999996" blue="0.4338788777" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="MHf-no-Lme" secondAttribute="centerX" id="986-MW-aTZ"/>
-                            <constraint firstAttribute="centerX" secondItem="4Zu-a1-EdV" secondAttribute="centerX" id="GNh-al-qku"/>
-                            <constraint firstItem="4Zu-a1-EdV" firstAttribute="top" secondItem="d8A-tv-LAD" secondAttribute="top" constant="215" id="QxB-FK-fiJ"/>
-                            <constraint firstItem="MHf-no-Lme" firstAttribute="top" secondItem="4Zu-a1-EdV" secondAttribute="bottom" constant="60" id="WVy-pA-VPA"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="circleButton" destination="MHf-no-Lme" id="1Ve-eB-scg"/>
-                        <outlet property="polygonButton" destination="4Zu-a1-EdV" id="InM-aJ-hme"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="F1s-Ko-Csu" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-166" y="138"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="J3A-ff-Vw4">

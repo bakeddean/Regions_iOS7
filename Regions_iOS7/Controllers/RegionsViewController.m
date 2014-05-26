@@ -51,16 +51,6 @@
     
     _regionsMapView.delegate = self;
     _regionsMapView.showsUserLocation = YES;
-    
-    // Set up the tap gesture recognizer for dismissing the settings form
-    // TODO - add this in init with hnib or something?
-    if(!_tapBehindGesture) {
-        _tapBehindGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapBehindDetected:)];
-        [_tapBehindGesture setNumberOfTapsRequired:1];
-        [_tapBehindGesture setCancelsTouchesInView:NO]; //So the user can still interact with controls in the modal view
-    }
-
-    [self.view.window addGestureRecognizer:_tapBehindGesture];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -83,6 +73,14 @@
         MKPolygon *regionOverlay = [MKPolygon polygonWithCoordinates:region.coordinates count:region.coordinateCount];
         [self.regionsMapView addOverlay:regionOverlay];
     }
+    
+    // Set up the tap gesture recognizer for dismissing the settings form
+    if(!_tapBehindGesture) {
+        _tapBehindGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapBehindDetected:)];
+        [_tapBehindGesture setNumberOfTapsRequired:1];
+        [_tapBehindGesture setCancelsTouchesInView:NO]; //So the user can still interact with controls in the modal view
+    }
+    [self.view.window addGestureRecognizer:_tapBehindGesture];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -174,7 +172,7 @@
 	cell.textLabel.text = event;
 	cell.textLabel.numberOfLines = 4;
     
-    if([event rangeOfString:@"Enter"].location != NSNotFound)
+    if([event rangeOfString:@"Entered"].location != NSNotFound)
         cell.imageView.image = [UIImage imageNamed:@"UpArrow"];
     else
         cell.imageView.image = [UIImage imageNamed:@"DownArrow"];
@@ -303,7 +301,6 @@
     // Check if current location is in a PolygonRegion
     // TODO - logic with reguard to overlapping polygons
     for(PolygonRegion *region in regions){
-        NSLog(@"Checking region");
     
         // Entered region
         if(!region.isInside && [region containsCoordinate:newLocation.coordinate]){
@@ -385,10 +382,6 @@
     
 }
 
-- (IBAction)done:(UIBarButtonItem *)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 //------------------------------------------------------------------------------
 // Add the region event to the events array and update the icon
 // badge number. *** TODO - add local notifications ****
@@ -400,14 +393,16 @@
 	// Update the icon badge number.
 	[UIApplication sharedApplication].applicationIconBadgeNumber++;
     
-    // Create a local notification
-    UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.fireDate = [NSDate date];
-    notification.timeZone = [NSTimeZone defaultTimeZone];
-    notification.alertBody = @"Entered Region";
-    notification.soundName = UILocalNotificationDefaultSoundName;
-    notification.applicationIconBadgeNumber = 1;
-    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+    // Create a local notification for entry events
+    if([event rangeOfString:@"Entered"].location != NSNotFound){
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.fireDate = [NSDate date];
+        notification.timeZone = [NSTimeZone defaultTimeZone];
+        notification.alertBody = @"Entered Region";
+        notification.soundName = UILocalNotificationDefaultSoundName;
+        notification.applicationIconBadgeNumber = 1;
+        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+    }
 	
 	if (!self.updatesTableView.hidden) {
 		[self.updatesTableView reloadData];
